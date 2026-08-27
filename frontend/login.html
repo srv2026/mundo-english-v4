@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingresar</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+<nav class="menu">
+<a href="/">Inicio</a>
+<a href="cursos.html">Cursos</a>
+<a href="registro.html">Registro</a>
+</nav>
+
+<h1>MUNDO ENGLISH</h1>
+
+</header>
+
+<section class="hero">
+
+<h1>Iniciar Sesión</h1>
+
+<div class="card">
+
+<input type="email" id="correo" placeholder="Correo">
+
+<input type="password" id="password" placeholder="Contraseña">
+
+<button onclick="login()">
+Ingresar
+</button>
+
+</div>
+
+</section>
+
+<script>
+
+async function login(){
+
+const correo =
+document.getElementById("correo").value;
+
+const password =
+document.getElementById("password").value;
+
+const response = await fetch("/api/login",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+correo,
+password
+})
+
+});
+
+const data = await response.json();
+
+if(data.mensaje.includes("Bienvenido")){
+
+localStorage.setItem("usuario", data.mensaje);
+
+window.location.href = "dashboard.html";
+
+
+}else{
+
+alert(data.mensaje);
+
+}
+
+
+}
+
+</script>
+
+</body>
+</html>

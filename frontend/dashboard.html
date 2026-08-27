@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🎓 MUNDO ENGLISH</h1>
+
+<div class="card">
+
+<h2 id="bienvenida"></h2>
+
+<a href="cursos.html">
+<button>📚 Ver Cursos</button>
+</a>
+
+<br><br>
+
+<a href="pago.html">
+<button>💳 Realizar Pago</button>
+</a>
+
+<br><br>
+
+<button onclick="cerrarSesion()">
+🚪 Cerrar Sesión
+</button>
+
+</div>
+
+<script>
+
+const usuario = localStorage.getItem("usuario");
+
+if(!usuario){
+
+  window.location.href = "login.html";
+
+}
+
+document.getElementById("bienvenida").innerHTML = usuario;
+
+function cerrarSesion(){
+
+  localStorage.removeItem("usuario");
+
+  localStorage.setItem("rol", data.rol);
+
+  window.location.href = "login.html";
+
+
+}
+
+</script>
+
+</body>
+</html>

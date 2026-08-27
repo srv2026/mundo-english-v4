@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mis Cursos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>📚 Cursos de Inglés</h1>
+
+<button onclick="window.location.href='dashboard.html'">
+🏠 Volver al Dashboard
+</button>
+
+<div class="card">
+
+<h2>🟢 Nivel A1 - Principiante</h2>
+
+<p>Saludos, presentaciones, números y vocabulario básico.</p>
+
+<iframe
+width="560"
+height="315"
+src="https://www.youtube.com/embed/TU_VIDEO_A1"
+allowfullscreen>
+</iframe>
+
+<br><br>
+
+<button>📝 Examen A1</button>
+
+</div>
+
+<div class="card">
+
+<h2>🔵 Nivel A2 - Básico</h2>
+
+<p>Conversaciones simples y gramática básica.</p>
+
+<iframe
+width="560"
+height="315"
+src="https://www.youtube.com/embed/TU_VIDEO_A2"
+allowfullscreen>
+</iframe>
+
+<br><br>
+
+<button>📝 Examen A2</button>
+
+</div>
+
+<div class="card">
+
+<h2>🟠 Nivel B1 - Intermedio</h2>
+
+<p>Conversación cotidiana y comprensión auditiva.</p>
+
+<iframe
+width="560"
+height="315"
+src="https://www.youtube.com/embed/TU_VIDEO_B1"
+allowfullscreen>
+</iframe>
+
+<br><br>
+
+<button>📝 Examen B1</button>
+
+</div>
+
+<div class="card">
+
+<h2>🔴 Nivel B2 - Intermedio Alto</h2>
+
+<p>Fluidez y vocabulario avanzado.</p>
+
+<iframe
+width="560"
+height="315"
+src="https://www.youtube.com/embed/TU_VIDEO_B2"
+allowfullscreen>
+</iframe>
+
+<br><br>
+
+<button>📝 Examen B2</button>
+
+</div>
+
+<div class="card">
+
+<h2>🏆 Nivel C1 - Avanzado</h2>
+
+<p>Comunicación profesional y académica.</p>
+
+<iframe
+width="560"
+height="315"
+src="https://www.youtube.com/embed/TU_VIDEO_C1"
+allowfullscreen>
+</iframe>
+
+<br><br>
+
+<button>📝 Examen C1</button>
+
+</div>
+
+<script>
+
+const usuario = localStorage.getItem("usuario");
+
+if(!usuario){
+
+    alert("Debes iniciar sesión");
+    window.location.href = "login.html";
+
+}
+
+</script>
+
+<div id="listaCursos"></div>
+
+<script>
+
+async function cargarCursos(){
+
+    const respuesta =
+    await fetch("/api/cursos");
+
+    const cursos =
+    await respuesta.json();
+
+    let html = "";
+
+    cursos.forEach(curso => {
+
+        html += `
+
+        <div class="card">
+
+            <h2>${curso.titulo}</h2>
+
+            <p>${curso.descripcion}</p>
+
+            <p><b>${curso.nivel}</b></p>
+
+            <iframe
+            width="560"
+            height="315"
+            src="${curso.video}"
+            allowfullscreen>
+            </iframe>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById(
+        "listaCursos"
+    ).innerHTML = html;
+
+}
+
+cargarCursos();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<h1>Pago del Curso</h1>
+
+<p>Escanea el QR y realiza el pago.</p>
+
+<img src="public/yape-qr.png" width="250">
+
+<h2>Precio: S/ 1.00</h2>
+
+<input type="file" id="comprobante">
+
+<br><br>
+
+<button onclick="enviarComprobante()">
+Enviar Comprobante
+</button>
+
+<script>
+
+async function enviarComprobante(){
+
+    const archivo =
+    document.getElementById("comprobante").files[0];
+
+    if(!archivo){
+        alert("Seleccione un comprobante");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("file", archivo);
+
+    const respuesta = await fetch(
+        "/api/pagos/comprobante",
+        {
+            method:"POST",
+            body:formData
+        }
+    );
+
+    const data = await respuesta.json();
+
+    alert(data.mensaje);
+
+}
+
+</script>

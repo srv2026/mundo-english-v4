@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Panel Administrador</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Panel de Administración</h1>
+
+<div class="card">
+
+<h2>➕ Crear Curso</h2>
+
+<input type="text" id="titulo" placeholder="Título">
+
+<br><br>
+
+<input type="text" id="descripcion" placeholder="Descripción">
+
+<br><br>
+
+<input type="text" id="nivel" placeholder="Nivel">
+
+<br><br>
+
+<input type="text" id="video" placeholder="Link Embed YouTube">
+
+<br><br>
+
+<button onclick="crearCurso()">
+Guardar Curso
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>Usuarios Registrados</h2>
+
+<div id="usuarios"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Pagos Recibidos</h2>
+
+<div id="pagos"></div>
+
+</div>
+
+<div class="card">
+  <h2>Total Usuarios</h2>
+  <h1 id="totalUsuarios">0</h1>
+</div>
+
+<div class="card">
+  <h2>Total Pagos</h2>
+  <h1 id="totalPagos">0</h1>
+</div>
+
+<button onclick="cerrarSesion()">
+Cerrar Sesión
+</button>
+
+<script>
+
+if(localStorage.getItem("rol") !== "admin"){
+
+    alert("Acceso denegado");
+    window.location.href = "login.html";
+
+}
+
+async function crearCurso(){
+
+    const titulo =
+    document.getElementById("titulo").value;
+
+    const descripcion =
+    document.getElementById("descripcion").value;
+
+    const nivel =
+    document.getElementById("nivel").value;
+
+    const video =
+    document.getElementById("video").value;
+
+    const respuesta = await fetch("/api/cursos",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            titulo,
+            descripcion,
+            nivel,
+            video
+        })
+
+    });
+
+    const data = await respuesta.json();
+
+    alert(data.mensaje);
+
+}
+
+async function cargarUsuarios(){
+
+  const respuesta = await fetch("/api/usuarios");
+  const usuarios = await respuesta.json();
+
+  document.getElementById("totalUsuarios").innerText =
+  usuarios.length;
+
+  let html = "";
+
+  
+  usuarios.forEach(usuario => {
+
+    html += `
+      <div class="usuario">
+
+        <p>
+          <b>${usuario.nombre}</b><br>
+          ${usuario.correo}
+        </p>
+
+        <button onclick="eliminarUsuario('${usuario._id}')">
+          🗑 Eliminar
+        </button>
+
+      </div>
+    `;
+
+  });
+
+  document.getElementById("usuarios").innerHTML = html;
+
+}
+
+async function eliminarUsuario(id){
+
+  if(!confirm("¿Eliminar usuario?")) return;
+
+  await fetch(`/api/usuarios/${id}`,{
+      method:"DELETE"
+  });
+
+  cargarUsuarios();
+
+}
+
+async function cargarPagos(){
+
+  const respuesta = await fetch("/api/pagos");
+  const pagos = await respuesta.json();
+
+  document.getElementById("totalPagos").innerText =
+  pagos.length;
+
+  let html = "";
+
+  pagos.forEach(pago => {
+
+    html += `
+      <div class="pago">
+
+        <p>
+          ${pago.nombreArchivo}
+          <br>
+          Estado:
+          <b>${pago.estado}</b>
+        </p>
+
+        <button onclick="actualizarEstado('${pago._id}','Aprobado')">
+          ✅ Aprobar
+        </button>
+
+        <button onclick="actualizarEstado('${pago._id}','Rechazado')">
+          ❌ Rechazar
+        </button>
+
+      </div>
+    `;
+
+  });
+
+  document.getElementById("pagos").innerHTML = html;
+
+}
+
+async function actualizarEstado(id,estado){
+
+  await fetch(`/api/pagos/${id}`,{
+
+    method:"PUT",
+
+    headers:{
+      "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+      estado
+    })
+
+  });
+
+  cargarPagos();
+
+}
+
+function cerrarSesion(){
+
+  localStorage.clear();
+  window.location.href = "login.html";
+
+}
+
+cargarUsuarios();
+cargarPagos();
+
+</script>
+
+</body>
+</html>
